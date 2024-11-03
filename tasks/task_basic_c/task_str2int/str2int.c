@@ -21,8 +21,8 @@ int access(const char * str) {
         }
     }
     return 1;
-}
 
+}
 int str2int(const char *str) {
     assert(*str != '\0');
     int sign = 1;

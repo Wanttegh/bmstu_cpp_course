@@ -3,14 +3,6 @@
 
 namespace bmstu {
 template<typename T>
-class basic_string;  /* объявляем класс */
-
-typedef basic_string<char> string;
-typedef basic_string<wchar_t> wstring;
-typedef basic_string<char16_t> u16string;
-typedef basic_string<char32_t> u32string;
-
-template<typename T>
 class basic_string {
 private:
   size_t size_ = 0; /* переменная размера строки */
@@ -249,4 +241,9 @@ public:
     }
   }
 };
+
+typedef basic_string<char> string;
+typedef basic_string<wchar_t> wstring;
+typedef basic_string<char16_t> u16string;
+typedef basic_string<char32_t> u32string;
 }

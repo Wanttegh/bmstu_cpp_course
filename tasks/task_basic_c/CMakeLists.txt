@@ -16,9 +16,9 @@ foreach(TASK ${TASKS})
 endforeach()
 message(STATUS "SOURCES: ${SOURCES}")
 add_executable(${NAME_EXECUTABLE} ${SOURCES}
-        task_string/hw_string.h
-        task_string/hw_string.cpp
-        task_string/hw_string_test.cpp)
+        task_template_string/hw_string.h
+        task_template_string/hw_string.cpp
+        task_template_string/hw_string_test.cpp)
 target_link_libraries(
         ${NAME_EXECUTABLE}
         GTest::gtest_main

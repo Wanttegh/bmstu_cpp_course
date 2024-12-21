@@ -1,3 +1,2 @@
 add_subdirectory(task_basic_c)
 add_subdirectory(bmstu_string)
-add_subdirectory(bmstu_string)

@@ -6,11 +6,11 @@
 namespace bmstu {
 template <typename T> class basic_string;
 
-typedef basic_string<char> string;
-typedef basic_string<char8_t> u8string;
-typedef basic_string<char16_t> u16string;
-typedef basic_string<char32_t> u32string;
-typedef basic_string<wchar_t> wstring;
+using string = basic_string<char>;
+using u8string = basic_string<char8_t>;
+using u16string = basic_string<char16_t>;
+using u32string = basic_string<char32_t>;
+using wstring = basic_string<wchar_t>;
 
 template <typename T> class basic_string {
 public:
@@ -21,7 +21,7 @@ public:
       ptr_[0] = 0;
   }
 
-  explicit basic_string(const size_t size){
+  basic_string(const size_t size){
     size_ = size;
     ptr_ = new T[size_+1];
     for (size_t i = 0; i < size_; ++i) {
@@ -59,7 +59,7 @@ public:
     ptr_[size_] = 0;
   }
 
-  basic_string(basic_string&& dying) noexcept {
+  basic_string(basic_string&& dying) {
     size_ = dying.size_;
     ptr_ = dying.ptr_;
     ptr_[size_] = 0;
@@ -78,11 +78,11 @@ public:
     }
   }
 
-  [[nodiscard]] size_t size() const {
+  size_t size() const {
     return size_;
   }
 
-  basic_string& operator=(basic_string&& dying) noexcept {
+  basic_string& operator=(basic_string&& dying) {
     if (this != &dying) {
       clean_();
       size_ = dying.size_;

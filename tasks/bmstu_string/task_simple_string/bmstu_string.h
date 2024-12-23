@@ -6,11 +6,11 @@
 namespace bmstu {
 template <typename T> class basic_string;
 
-using string = basic_string<char>;
-using u8string = basic_string<char8_t>;
-using u16string = basic_string<char16_t>;
-using u32string = basic_string<char32_t>;
-using wstring = basic_string<wchar_t>;
+typedef basic_string<char> string;
+typedef basic_string<char8_t> u8string;
+typedef basic_string<char16_t> u16string;
+typedef basic_string<char32_t> u32string;
+typedef basic_string<wchar_t> wstring;
 
 template <typename T> class basic_string {
 public:
@@ -21,20 +21,20 @@ public:
       ptr_[0] = 0;
   }
 
-  basic_string(size_t size){
+  explicit basic_string(const size_t size){
     size_ = size;
     ptr_ = new T[size_+1];
-    for (size_t i = 0; i < size_; i++) {
+    for (size_t i = 0; i < size_; ++i) {
       ptr_[i] = ' ';
     }
     ptr_[size_] = 0;
   }
 
-  basic_string(std::initializer_list<T> il){
+  basic_string(const std::initializer_list<T> il){
     size_ = il.size();
     ptr_ = new T[size_+1];
     size_t i = 0;
-    for (auto obj : il) {
+    for (auto& obj : il) {
       ptr_[i] = obj;
       ++i;
     }
@@ -50,31 +50,27 @@ public:
     ptr_[size_] = 0;
   }
 
-  basic_string(basic_string& other) {
-    size_ = other.size();
-    ptr_ = other.c_str();
+  basic_string(const basic_string& other) {
+    size_ = other.size_;
+    ptr_ = new T[size_+1];
     for (size_t i = 0; i < size_; ++i) {
       ptr_[i] = other.ptr_[i];
     }
     ptr_[size_] = 0;
   }
 
-  basic_string(basic_string&& dying) {
-    size_ = dying.size();
-    ptr_ = dying.c_str();
-    for (size_t i = 0; i < size_; ++i) {
-      ptr_[i] = dying.ptr_[i];
-    }
+  basic_string(basic_string&& dying) noexcept {
+    size_ = dying.size_;
+    ptr_ = dying.ptr_;
     ptr_[size_] = 0;
-    dying.size_ = 0;
-    dying.ptr_ = nullptr;
+    dying.clean_();
   }
 
   ~basic_string() {
     clean_();
   }
 
-  T* c_str() const {
+  const T* c_str() const {
     if (ptr_ == nullptr) {
       return reinterpret_cast<const T*>("");
     } else {
@@ -82,14 +78,14 @@ public:
     }
   }
 
-  size_t size() const {
+  [[nodiscard]] size_t size() const {
     return size_;
   }
 
-  basic_string& operator=(basic_string&& dying) {
+  basic_string& operator=(basic_string&& dying) noexcept {
     if (this != &dying) {
       clean_();
-      size_ = dying.size();
+      size_ = dying.size_;
       ptr_ = new T[size_+1];
       for (size_t i = 0; i < size_; ++i) {
         ptr_[i] = dying.ptr_[i];
@@ -116,7 +112,7 @@ public:
   basic_string& operator=(basic_string& other) {
     if (this != &other) {
       clean_();
-      size_ = other.size();
+      size_ = other.size_;
       ptr_ = new T[size_+1];
       for (size_t i = 0; i < size_; ++i) {
         ptr_[i] = other.ptr_[i];
@@ -129,13 +125,13 @@ public:
   friend basic_string<T> operator+(const basic_string<T>& left,
                                    const basic_string<T>& right) {
     basic_string<T> obj;
-    obj.size_ = left.size() + right.size();
-    obj.ptr_ = new T[obj.size()+1];
-    for (size_t i = 0; i < left.size(); ++i) {
+    obj.size_ = left.size_ + right.size_;
+    obj.ptr_ = new T[obj.size_+1];
+    for (size_t i = 0; i < left.size_; ++i) {
       obj.ptr_[i] = left.ptr_[i];
     }
-    for (size_t i = 0; i < right.size(); ++i) {
-      obj.ptr_[i+left.size()] = right.ptr_[i];
+    for (size_t i = 0; i < right.size_; ++i) {
+      obj.ptr_[i+left.size_] = right.ptr_[i];
     }
     obj.ptr_[obj.size_] = 0;
     return obj;
@@ -160,11 +156,11 @@ public:
   }
 
   basic_string& operator+=(const basic_string& other) {
-    size_ += other.size();
-    T* prev_data = c_str();
+    size_ += other.size_;
+    T* prev_data = ptr_;
     ptr_ = new T[size_+1];
     ptr_ = prev_data;
-    for (size_t i = 0; i < other.size(); ++i) {
+    for (size_t i = 0; i < other.size_; ++i) {
       ptr_[i+size_] = other.ptr_[i];
     }
     ptr_[size_] = 0;
@@ -173,7 +169,7 @@ public:
 
   basic_string& operator+=(T symbol) {
     size_++;
-    T* prev_data = c_str();
+    T* prev_data = ptr_;
     ptr_ = new T[size_+1];
     ptr_ = prev_data;
     ptr_[size_-1] = symbol;

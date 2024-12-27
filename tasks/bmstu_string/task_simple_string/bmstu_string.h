@@ -14,13 +14,13 @@ using wstring = basic_string<wchar_t>;
 template <typename T> class basic_string {
 public:
   /// Конструктор по умолчанию
-  basic_string(){
+  basic_string() {
       size_ = 0;
       ptr_ = new T[1];
       ptr_[0] = 0;
   }
 
-  basic_string(const size_t size){
+  basic_string(const size_t size) {
     size_ = size;
     ptr_ = new T[size_+1];
     for (size_t i = 0; i < size_; ++i) {
@@ -29,7 +29,7 @@ public:
     ptr_[size_] = 0;
   }
 
-  basic_string(const std::initializer_list<T> il){
+  basic_string(const std::initializer_list<T> il) {
     size_ = il.size();
     ptr_ = new T[size_+1];
     size_t i = 0;
@@ -43,7 +43,7 @@ public:
   basic_string(const T* c_str) {
     size_ = strlen_(c_str);
     ptr_ = new T[size_ + 1];
-    for (size_t i = 0; i < size_; ++i){
+    for (size_t i = 0; i < size_; ++i) {
       ptr_[i] = c_str[i];
     }
     ptr_[size_] = 0;
